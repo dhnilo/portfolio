@@ -1,15 +1,18 @@
-name: Deploy to GitHub Pages
+name: Enterprise CI/CD Pipeline
 
 on:
   push:
+    branches: [ main, develop, test ]
+  pull_request:
     branches: [ main ]
 
 jobs:
-  build-and-deploy:
+  quality-gates:
+    name: Quality Gates
     runs-on: ubuntu-latest
     
     steps:
-    - name: Checkout
+    - name: Checkout code
       uses: actions/checkout@v4
       
     - name: Setup Node.js
@@ -21,10 +24,104 @@ jobs:
     - name: Install dependencies
       run: npm ci
       
-    - name: Build
+    - name: Run linting
+      run: npm run lint
+      
+    - name: Type checking
+      run: npx tsc --noEmit
+      
+    - name: Build verification
       run: npm run build
       
-    - name: Deploy to GitHub Pages
+    # Quality gate: if any step fails, deployment stops
+
+  deploy-dev:
+    name: Deploy to Development
+    runs-on: ubuntu-latest
+    needs: quality-gates
+    if: github.ref == 'refs/heads/develop'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Build for development
+      run: |
+        echo "NEXT_PUBLIC_ENV=development" > .env.local
+        npm run build
+        
+    - name: Deploy to GitHub Pages (Dev)
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./out
+        destination_dir: dev
+
+  deploy-test:
+    name: Deploy to Test
+    runs-on: ubuntu-latest
+    needs: quality-gates
+    if: github.ref == 'refs/heads/test'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Build for testing
+      run: |
+        echo "NEXT_PUBLIC_ENV=test" > .env.local
+        npm run build
+        
+    - name: Deploy to GitHub Pages (Test)
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./out
+        destination_dir: test
+
+  deploy-prod:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: quality-gates
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Build for production
+      run: |
+        echo "NEXT_PUBLIC_ENV=production" > .env.local
+        npm run build
+        
+    - name: Deploy to GitHub Pages (Prod)
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
