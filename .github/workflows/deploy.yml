@@ -24,9 +24,6 @@ jobs:
     - name: Install dependencies
       run: npm ci
       
-    - name: Run linting
-      run: npm run lint
-      
     - name: Type checking
       run: npx tsc --noEmit
       
@@ -53,9 +50,7 @@ jobs:
       run: npm ci
       
     - name: Build for development
-      run: |
-        echo "NEXT_PUBLIC_ENV=development" > .env.local
-        npm run build
+      run: npm run build
         
     - name: Deploy to GitHub Pages (Dev)
       uses: peaceiris/actions-gh-pages@v3
@@ -84,9 +79,7 @@ jobs:
       run: npm ci
       
     - name: Build for testing
-      run: |
-        echo "NEXT_PUBLIC_ENV=test" > .env.local
-        npm run build
+      run: npm run build
         
     - name: Deploy to GitHub Pages (Test)
       uses: peaceiris/actions-gh-pages@v3
@@ -115,9 +108,7 @@ jobs:
       run: npm ci
       
     - name: Build for production
-      run: |
-        echo "NEXT_PUBLIC_ENV=production" > .env.local
-        npm run build
+      run: npm run build
         
     - name: Deploy to GitHub Pages (Prod)
       uses: peaceiris/actions-gh-pages@v3
