@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer components {
+  .section {
+    @apply py-20 px-4;
+  }
+  
+  .container {
+    @apply max-w-6xl mx-auto;
+  }
+  
+  .card {
+    @apply bg-secondary rounded-lg p-6 border border-gray-700 hover:border-accent transition-colors;
+  }
+}
