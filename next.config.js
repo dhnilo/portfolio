@@ -2,8 +2,8 @@
 
 // Determine base path based on environment
 const getBasePath = () => {
-  // If explicitly set (like in CI), use it
-  if (process.env.NEXT_PUBLIC_BASE_PATH) {
+  // If explicitly set (like in CI), use it (including empty string)
+  if (process.env.NEXT_PUBLIC_BASE_PATH !== undefined) {
     return process.env.NEXT_PUBLIC_BASE_PATH
   }
   
