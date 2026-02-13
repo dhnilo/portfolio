@@ -58,18 +58,13 @@ jobs:
       run: |
         echo "NEXT_PUBLIC_BASE_PATH=/portfolio/dev" > .env.local
         npm run build
-      
-    - name: Setup Pages
-      uses: actions/configure-pages@v4
-      
-    - name: Upload artifact
-      uses: actions/upload-pages-artifact@v3
-      with:
-        path: './out'
         
-    - name: Deploy to GitHub Pages
-      id: deployment
-      uses: actions/deploy-pages@v4
+    - name: Deploy to GitHub Pages (Dev)
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./out
+        destination_dir: dev
 
   deploy-test:
     name: Deploy to Test
@@ -94,18 +89,13 @@ jobs:
       run: |
         echo "NEXT_PUBLIC_BASE_PATH=/portfolio/test" > .env.local
         npm run build
-      
-    - name: Setup Pages
-      uses: actions/configure-pages@v4
-      
-    - name: Upload artifact
-      uses: actions/upload-pages-artifact@v3
-      with:
-        path: './out'
         
-    - name: Deploy to GitHub Pages
-      id: deployment
-      uses: actions/deploy-pages@v4
+    - name: Deploy to GitHub Pages (Test)
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./out
+        destination_dir: test
 
   deploy-prod:
     name: Deploy to Production
