@@ -60,7 +60,7 @@ jobs:
       
     - name: Build for development
       run: |
-        echo "NEXT_PUBLIC_BASE_PATH=/portfolio/dev" > .env.local
+        echo "NEXT_PUBLIC_BASE_PATH=" > .env.local
         npm run build
         
     - name: Deploy to GitHub Pages (Dev)
@@ -95,7 +95,7 @@ jobs:
       
     - name: Build for testing
       run: |
-        echo "NEXT_PUBLIC_BASE_PATH=/portfolio/test" > .env.local
+        echo "NEXT_PUBLIC_BASE_PATH=" > .env.local
         npm run build
         
     - name: Deploy to GitHub Pages (Test)
